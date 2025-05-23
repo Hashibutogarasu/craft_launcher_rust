@@ -1,4 +1,4 @@
-Craft Launcher Core
+# Craft Launcher Core
 
 Craft Launcher Core is a Rust-powered cross-platform launcher core library for Minecraft.
 It supports all Minecraft versions, including modded environments, and provides utilities for profile creation and management. This library is designed to be embedded into desktop applications via FFI (e.g., Flutter, C#, etc.) using a dynamic library (DLL, dylib, so).

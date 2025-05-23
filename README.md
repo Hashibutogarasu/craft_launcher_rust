@@ -22,8 +22,6 @@ Download & cache assets: Handles Minecraft manifests, assets, libraries, version
 
 Safe and performant: Rust safety + multithreaded performance
 
-
-
 ---
 
 # Example Use Case
@@ -46,25 +44,21 @@ Flutter UI (Windows, macOS, Linux)
 
 Requirements
 
-Rust (stable)
-
-CMake (for certain dependencies)
-
-Visual Studio Build Tools (Windows)
-
-Flutter (optional, for integration testing)
-
+- Rust (stable)
+- CMake (for certain dependencies)
+- Visual Studio Build Tools (Windows)
+-  Flutter (optional, for integration testing)
 
 Build DLL (Windows example)
 
+```
 cargo build --release
-
+```
 The DLL will be located at:
 
-target/release/craft_launcher_core.dll
+`target/release/craft_launcher_core.dll`
 
 Use cargo doc --open to view documentation.
-
 
 ---
 

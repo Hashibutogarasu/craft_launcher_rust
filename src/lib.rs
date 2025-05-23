@@ -16,9 +16,9 @@ pub mod craft_launcher {
     }
 
     /// Launcher core module.
-    /// This module can launch Minecraft from other program languages.
-    /// For example, if this library was built for Windows (.dll extension), you can use it
-    /// in Flutter, C# Windows Application, etc...
+    /// This module can allows launching Minecraft from other programming languages.
+    /// For example, if this library was built as a Windows DLL, you can use it from Flutter,
+    /// C# Windows Applications, and other environments
     pub mod core {
         pub mod disposable;
 

@@ -79,3 +79,16 @@ MIT
 This library is not affiliated with Mojang or Microsoft.
 Use it responsibly and always comply with Minecraft's EULA and distribution rules.
 
+# Contributing
+
+We welcome contributions! To get started:
+
+1. Fork the repository
+
+2. Create a new branch (git checkout -b feature-branch)
+
+3. Make your changes
+
+4. Run cargo fmt and cargo clippy to ensure style and linting
+
+5. Submit a pull request with a clear description of your changes

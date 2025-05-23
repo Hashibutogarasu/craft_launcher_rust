@@ -1,5 +1,5 @@
 /**
- * A library for managing directories and files.
+ * A library of craft launcher core functionalities.
  */
 pub mod craft_launcher {
     pub mod utils {

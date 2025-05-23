@@ -36,6 +36,111 @@ pub mod networking {
         file_utils::close_file(dest)?;
         Ok(())
     }
+
+    /**
+     * C language version of read_file_from_url.
+     * Reads a file from a URL and returns its content as a string.
+     *
+     * @param url The URL of the file to read
+     * @param out_data Pointer to store the allocated memory containing the content
+     * @param out_len Pointer to store the length of the content
+     * @return 0 on success, -1 on failure
+     */
+    #[unsafe(no_mangle)]
+    pub extern "C" fn read_file_from_url_c(
+        url: *const libc::c_char,
+        out_data: *mut *mut libc::c_char,
+        out_len: *mut libc::size_t,
+    ) -> libc::c_int {
+        use std::ffi::{CStr, CString};
+
+        // Convert C string to Rust string
+        let url_cstr = unsafe {
+            if url.is_null() {
+                return -1;
+            }
+            CStr::from_ptr(url)
+        };
+
+        let url_str = match url_cstr.to_str() {
+            Ok(s) => s,
+            Err(_) => return -1,
+        };
+
+        // Call Rust function
+        match read_file_from_url(url_str) {
+            Ok(content) => {
+                // Convert Rust string to C string
+                let content_cstring = match CString::new(content) {
+                    Ok(s) => s,
+                    Err(_) => return -1,
+                };
+
+                // Get raw pointer and prevent it from being freed
+                let content_ptr = content_cstring.into_raw();
+                let content_len = unsafe { libc::strlen(content_ptr) };
+
+                // Set output parameters
+                unsafe {
+                    *out_data = content_ptr;
+                    *out_len = content_len;
+                }
+
+                0
+            }
+            Err(_) => -1,
+        }
+    }
+
+    /**
+     * C language version of download_file.
+     * Downloads a file from a URL and saves it to the specified destination.
+     *
+     * @param url The URL of the file to download
+     * @param dest The destination path where the file will be saved
+     * @return 0 on success, -1 on failure
+     */
+    #[unsafe(no_mangle)]
+    pub extern "C" fn download_file_c(
+        url: *const libc::c_char,
+        dest: *const libc::c_char,
+    ) -> libc::c_int {
+        use std::ffi::CStr;
+
+        // Convert C strings to Rust strings
+        let url_cstr = unsafe {
+            if url.is_null() {
+                return -1;
+            }
+            CStr::from_ptr(url)
+        };
+
+        let dest_cstr = unsafe {
+            if dest.is_null() {
+                return -1;
+            }
+            CStr::from_ptr(dest)
+        };
+
+        let url_str = match url_cstr.to_str() {
+            Ok(s) => s,
+            Err(_) => return -1,
+        };
+
+        let dest_str = match dest_cstr.to_str() {
+            Ok(s) => s,
+            Err(_) => return -1,
+        };
+
+        // Convert dest string to PathBuf
+        let dest_path = PathBuf::from(dest_str);
+
+        // Call Rust function
+        match download_file(url_str, &dest_path) {
+            Ok(_) => 0,
+            Err(_) => -1,
+        }
+    }
 }
 
 #[cfg(test)]

@@ -6,7 +6,7 @@ It supports all Minecraft versions, including modded environments, and provides 
 
 ---
 
-Features
+# Features
 
 Supports all Minecraft versions (vanilla, Forge, Fabric, legacy to modern)
 
@@ -26,7 +26,7 @@ Safe and performant: Rust safety + multithreaded performance
 
 ---
 
-Example Use Case
+# Example Use Case
 
 Embed this library into a Flutter-based desktop Minecraft launcher.
 
@@ -42,7 +42,7 @@ Flutter UI (Windows, macOS, Linux)
 
 ---
 
-Build Instructions
+# Build Instructions
 
 Requirements
 
@@ -68,19 +68,19 @@ Use cargo doc --open to view documentation.
 
 ---
 
-FFI Usage
+# FFI Usage
 
 This feature is not supported yet.
 
 ---
 
-License
+# License
 
 MIT
 
 ---
 
-Disclaimer
+# Disclaimer
 
 This library is not affiliated with Mojang or Microsoft.
 Use it responsibly and always comply with Minecraft's EULA and distribution rules.

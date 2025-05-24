@@ -20,12 +20,18 @@ pub mod craft_launcher {
     /// For example, if this library was built as a Windows DLL, you can use it from Flutter,
     /// C# Windows Applications, and other environments
     pub mod core {
-        pub mod disposable;
+        /// 🚧 Work In Progress: Experimental module.
+        /// Asset downloader, parser and utility functions.
+        pub mod assets {
+            pub mod assets_parser;
+        }
 
         /// Disposable interface
+        pub mod disposable;
+
+        /// Core Minecraft launcher engine.
         pub mod engine;
 
-        /// 🚧 Work In Progress: Experimental module.
         /// JSON serializable structs
         pub mod json_structs;
 

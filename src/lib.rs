@@ -1,68 +1,35 @@
 /// A library of craft launcher core functionalities.
-pub mod craft_launcher {
-    /// An utility functions, structs, logics, etc...
-    pub mod utils {
-        /// This module can modify directory.
-        pub mod directory_operations;
+pub mod craft_launcher;
 
-        /// This module can modify file.
-        pub mod file_operations;
+// Utils module exports
+pub use crate::craft_launcher::utils::directory_operations;
+pub use crate::craft_launcher::utils::file_operations;
+pub use crate::craft_launcher::utils::networking;
+pub use crate::craft_launcher::utils::path_operations;
 
-        /// This module can get a file from internet.
-        pub mod networking;
+// Core module exports
+pub use crate::craft_launcher::core::disposable;
+pub use crate::craft_launcher::core::engine;
+pub use crate::craft_launcher::core::json_structs;
 
-        /// This module can get temporal directory.
-        pub mod path_operations;
-    }
+// Assets module exports
+pub use crate::craft_launcher::core::assets::assets_parser;
 
-    /// Launcher core module.
-    /// This module can allows launching Minecraft from other programming languages.
-    /// For example, if this library was built as a Windows DLL, you can use it from Flutter,
-    /// C# Windows Applications, and other environments
-    pub mod core {
-        /// 🚧 Work In Progress: Experimental module.
-        /// Asset downloader, parser and utility functions.
-        pub mod assets {
-            pub mod assets_parser;
-        }
+// Version module exports
+pub use crate::craft_launcher::core::version::base_version;
+pub use crate::craft_launcher::core::version::version_handler;
+pub use crate::craft_launcher::core::version::version_parser;
 
-        /// Disposable interface
-        pub mod disposable;
+// Legacy version exports
+pub use crate::craft_launcher::core::version::legacy::legacy_fabric;
+pub use crate::craft_launcher::core::version::legacy::legacy_forge;
+pub use crate::craft_launcher::core::version::legacy::legacy_vanilla;
 
-        /// Core Minecraft launcher engine.
-        pub mod engine;
+// Modern version exports
+pub use crate::craft_launcher::core::version::modern::modern_fabric;
+pub use crate::craft_launcher::core::version::modern::modern_forge;
+pub use crate::craft_launcher::core::version::modern::modern_neoforge;
+pub use crate::craft_launcher::core::version::modern::modern_vanilla;
 
-        /// JSON serializable structs
-        pub mod json_structs;
-
-        /// Version information of Minecraft
-        pub mod version {
-            /// Legacy version (Before 1.12)
-            pub mod legacy {
-                pub mod legacy_fabric;
-                pub mod legacy_forge;
-                pub mod legacy_vanilla;
-            }
-
-            /// Modern version (After 1.13)
-            pub mod modern {
-                pub mod modern_fabric;
-                pub mod modern_forge;
-                pub mod modern_neoforge;
-                pub mod modern_vanilla;
-            }
-
-            /// A base version information.
-            /// This module has the struct which can extend version.
-            pub mod base_version;
-
-            /// An interface for handling different Minecraft version behaviors.
-            /// This trait defines methods for installing a version and validating its manifest.
-            pub mod version_handler;
-
-            /// A perser of Minecraft version information.
-            /// This module can parse the json file which likes vanilla, forge and other mod loaders.
-            pub mod version_parser;
-        }
-    }
-}
+// Java module exports (if any are available)
+// pub use crate::craft_launcher::java::*;

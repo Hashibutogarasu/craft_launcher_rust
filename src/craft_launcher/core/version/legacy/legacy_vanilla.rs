@@ -13,20 +13,24 @@ pub mod legacy_vanilla {
         // BaseVersion fields
         #[serde(flatten)]
         pub base: BaseVersion,
-
         /// The assets index information
-        #[serde(rename = "assetIndex")]
-        pub asset_index: AssetIndex,
+        #[serde(rename = "assetIndex", skip_serializing_if = "Option::is_none")]
+        pub asset_index: Option<AssetIndex>,
 
         /// The assets directory name
-        pub assets: String,
+        #[serde(rename = "assets", skip_serializing_if = "Option::is_none")]
+        pub assets: Option<String>,
 
         /// The minimum launcher version required to run this version
-        #[serde(rename = "minimumLauncherVersion")]
-        pub minimum_launcher_version: i32,
+        #[serde(
+            rename = "minimumLauncherVersion",
+            skip_serializing_if = "Option::is_none"
+        )]
+        pub minimum_launcher_version: Option<i32>,
 
         /// Download information for client and server JARs
-        pub downloads: Downloads,
+        #[serde(rename = "downloads", skip_serializing_if = "Option::is_none")]
+        pub downloads: Option<Downloads>,
 
         /// Java version requirements
         #[serde(skip_serializing_if = "Option::is_none", rename = "javaVersion")]
@@ -56,15 +60,16 @@ pub mod legacy_vanilla {
         /// The URL to download the asset index
         pub url: String,
     }
-
     /// Download information for a Minecraft version
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct Downloads {
         /// Client JAR information
-        pub client: DownloadEntry,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        pub client: Option<DownloadEntry>,
 
         /// Server JAR information
-        pub server: DownloadEntry,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        pub server: Option<DownloadEntry>,
 
         /// Windows server executable information
         #[serde(skip_serializing_if = "Option::is_none", rename = "windows_server")]
@@ -147,16 +152,20 @@ pub mod legacy_vanilla {
                     struct InnerLegacyVanillaVersion {
                         #[serde(flatten)]
                         base: BaseVersion,
+                        #[serde(rename = "assetIndex", skip_serializing_if = "Option::is_none")]
+                        asset_index: Option<AssetIndex>,
 
-                        #[serde(rename = "assetIndex")]
-                        asset_index: AssetIndex,
+                        #[serde(rename = "assets", skip_serializing_if = "Option::is_none")]
+                        assets: Option<String>,
 
-                        assets: String,
+                        #[serde(
+                            rename = "minimumLauncherVersion",
+                            skip_serializing_if = "Option::is_none"
+                        )]
+                        minimum_launcher_version: Option<i32>,
 
-                        #[serde(rename = "minimumLauncherVersion")]
-                        minimum_launcher_version: i32,
-
-                        downloads: Downloads,
+                        #[serde(rename = "downloads", skip_serializing_if = "Option::is_none")]
+                        downloads: Option<Downloads>,
 
                         #[serde(skip_serializing_if = "Option::is_none", rename = "javaVersion")]
                         java_version: Option<JavaVersion>,
@@ -171,7 +180,6 @@ pub mod legacy_vanilla {
                     // Deserialize
                     let inner = InnerLegacyVanillaVersion::deserialize(json_data)
                         .map_err(de::Error::custom)?;
-
                     Ok(LegacyVanillaVersion {
                         base: inner.base,
                         asset_index: inner.asset_index,
@@ -196,13 +204,13 @@ pub mod legacy_vanilla {
             self.base.clone()
         }
 
-        /// Creates a new LegacyVanillaVersion from a BaseVersion and additional parameters
+        /// Creates a new LegacyVanillaVersion from a BaseVersion and additional parameters        
         pub fn from_base_version(
             base: BaseVersion,
-            asset_index: AssetIndex,
-            assets: String,
-            minimum_launcher_version: i32,
-            downloads: Downloads,
+            asset_index: Option<AssetIndex>,
+            assets: Option<String>,
+            minimum_launcher_version: Option<i32>,
+            downloads: Option<Downloads>,
             java_version: Option<JavaVersion>,
             compliance_level: Option<i32>,
         ) -> Self {
@@ -485,8 +493,8 @@ mod tests {
         assert_eq!(legacy_version.base.type_, "release");
         assert!(legacy_version.base.minecraft_arguments.is_some());
         assert!(legacy_version.base.arguments.is_none());
-        assert_eq!(legacy_version.assets, "1.7.10");
-        assert_eq!(legacy_version.minimum_launcher_version, 13);
+        assert_eq!(legacy_version.assets, Some("1.7.10".to_string()));
+        assert_eq!(legacy_version.minimum_launcher_version, Some(13));
         assert!(legacy_version.java_version.is_some());
         assert_eq!(
             legacy_version.java_version.as_ref().unwrap().component,
@@ -992,20 +1000,18 @@ mod tests {
             size: 1000,
             total_size: 10000,
             url: "https://example.com/assets".to_string(),
-        };
-
-        // Create download info
+        }; // Create download info
         let downloads = Downloads {
-            client: DownloadEntry {
+            client: Some(DownloadEntry {
                 sha1: "clienthash".to_string(),
                 size: 5000,
                 url: "https://example.com/client.jar".to_string(),
-            },
-            server: DownloadEntry {
+            }),
+            server: Some(DownloadEntry {
                 sha1: "serverhash".to_string(),
                 size: 6000,
                 url: "https://example.com/server.jar".to_string(),
-            },
+            }),
             windows_server: None,
         };
 
@@ -1013,15 +1019,13 @@ mod tests {
         let java_version = Some(JavaVersion {
             component: "jre-legacy".to_string(),
             major_version: 8,
-        });
-
-        // Create LegacyVanillaVersion
+        }); // Create LegacyVanillaVersion
         let legacy = LegacyVanillaVersion::from_base_version(
             base.clone(),
-            asset_index,
-            "1.7.10".to_string(),
-            13,
-            downloads,
+            Some(asset_index),
+            Some("1.7.10".to_string()),
+            Some(13),
+            Some(downloads),
             java_version,
             Some(0),
         );

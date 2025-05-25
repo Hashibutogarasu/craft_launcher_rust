@@ -2,6 +2,8 @@ pub mod legacy_forge {
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
+    use crate::library_struct::Library;
+
     /// Structure that represents a legacy Forge version file
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct LegacyForgeVersion {
@@ -39,17 +41,7 @@ pub mod legacy_forge {
         pub minecraft_arguments: String,
 
         /// Libraries required by this version
-        pub libraries: Vec<Library>,
-    }
-
-    /// Structure representing a library entry in the version file
-    #[derive(Debug, Clone, Serialize, Deserialize)]
-    pub struct Library {
-        /// Maven artifact name
-        pub name: String,
-
-        /// Download information for this library
-        pub downloads: Option<Downloads>,
+        pub libraries: Vec<Library<Downloads>>,
     }
 
     /// Structure representing download information for libraries

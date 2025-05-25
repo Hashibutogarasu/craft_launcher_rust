@@ -15,3 +15,6 @@ pub mod version_handler;
 /// A perser of Minecraft version information.
 /// This module can parse the json file which likes vanilla, forge and other mod loaders.
 pub mod version_parser;
+
+pub mod library_struct;
+pub mod library_parser;

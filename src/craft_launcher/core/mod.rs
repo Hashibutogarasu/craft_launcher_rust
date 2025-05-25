@@ -2,6 +2,9 @@
 /// Asset downloader, parser and utility functions.
 pub mod assets;
 
+/// Version manifest parser
+pub mod manifest;
+
 /// Disposable interface
 pub mod disposable;
 

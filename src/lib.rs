@@ -16,8 +16,13 @@ pub use crate::craft_launcher::core::json_structs;
 // Assets module exports
 pub use crate::craft_launcher::core::assets::assets_parser;
 
+// Version manifest parser
+pub use crate::craft_launcher::core::manifest::version_manifest_parser;
+
 // Version module exports
 pub use crate::craft_launcher::core::version::base_version;
+pub use crate::craft_launcher::core::version::library_parser;
+pub use crate::craft_launcher::core::version::library_struct;
 pub use crate::craft_launcher::core::version::version_handler;
 pub use crate::craft_launcher::core::version::version_parser;
 

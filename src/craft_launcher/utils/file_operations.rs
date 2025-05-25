@@ -99,6 +99,30 @@ pub mod file_utils {
     }
 
     /**
+     * Get the size of a file in bytes.
+     * path: The path to the file.
+     * Returns Ok(size) with the file size in bytes if successful, Err(e) otherwise.
+     */
+    pub fn get_file_size(path: &PathBuf) -> std::io::Result<u64> {
+        let metadata = fs::metadata(path)?;
+        Ok(metadata.len())
+    }
+
+    /**
+     * Get the size of a file in bytes.
+     * path: The path to the file.
+     * Returns the file size in bytes if successful, -1 otherwise.
+     * This function is unsafe because it uses raw pointers.
+     */
+    #[unsafe(no_mangle)]
+    pub extern "C" fn get_file_size_c(path: &PathBuf) -> i64 {
+        match get_file_size(path) {
+            Ok(size) => size as i64,
+            Err(_) => -1,
+        }
+    }
+
+    /**
      * Write text data to a file.
      * path: The path to the file.
      * data: The data to write.

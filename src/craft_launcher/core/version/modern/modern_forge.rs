@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 pub mod modern_forge {
+    use crate::library_struct::Library;
+
     use super::*;
 
     /// Structure representing the main Forge version configuration file
@@ -20,15 +22,8 @@ pub mod modern_forge {
         pub logging: HashMap<String, serde_json::Value>,
         #[serde(rename = "mainClass")]
         pub main_class: String,
-        pub libraries: Vec<Library>,
+        pub libraries: Vec<Library<Downloads>>,
         pub arguments: Arguments,
-    }
-
-    /// Structure representing a library in the Forge version
-    #[derive(Debug, Clone, Deserialize, Serialize)]
-    pub struct Library {
-        pub name: String,
-        pub downloads: Downloads,
     }
 
     /// Structure representing download information for a library
@@ -59,16 +54,15 @@ pub mod modern_forge {
     }
 }
 
+#[cfg(test)]
 mod tests {
-    #[cfg(test)]
-    mod forge_tests {
-        use super::super::modern_forge::*;
+    use crate::modern_forge::modern_forge::parse_forge_version;
 
-        /// Test that a valid Forge JSON can be correctly parsed to a ForgeVersion struct
-        #[test]
-        fn test_parse_forge_version() {
-            // Sample Forge version JSON mimicking the real file structure
-            let sample_json = r#"
+    /// Test that a valid Forge JSON can be correctly parsed to a ForgeVersion struct
+    #[test]
+    fn test_parse_forge_version() {
+        // Sample Forge version JSON mimicking the real file structure
+        let sample_json = r#"
             {
                 "_comment": [
                     "Please do not automate the download and installation of Forge.",
@@ -106,63 +100,63 @@ mod tests {
             }
             "#;
 
-            // Parse the JSON string into a ForgeVersion struct
-            let result = parse_forge_version(sample_json);
+        // Parse the JSON string into a ForgeVersion struct
+        let result = parse_forge_version(sample_json);
 
-            // Check that the parse was successful
-            assert!(result.is_ok(), "Failed to parse Forge version JSON");
+        // Check that the parse was successful
+        assert!(result.is_ok(), "Failed to parse Forge version JSON");
 
-            // Unwrap the result and verify some key fields
-            let forge_version = result.unwrap();
+        // Unwrap the result and verify some key fields
+        let forge_version = result.unwrap();
 
-            assert_eq!(forge_version.id, "1.21.1-forge-52.1.1");
-            assert_eq!(forge_version.inherits_from, "1.21.1");
-            assert_eq!(forge_version.version_type, "release");
-            assert_eq!(
-                forge_version.main_class,
-                "net.minecraftforge.bootstrap.ForgeBootstrap"
-            );
+        assert_eq!(forge_version.id, "1.21.1-forge-52.1.1");
+        assert_eq!(forge_version.inherits_from, "1.21.1");
+        assert_eq!(forge_version.version_type, "release");
+        assert_eq!(
+            forge_version.main_class,
+            "net.minecraftforge.bootstrap.ForgeBootstrap"
+        );
 
-            // Verify comments
-            assert!(forge_version.comment.is_some());
-            let comments = forge_version.comment.unwrap();
-            assert_eq!(comments.len(), 2);
-            assert_eq!(
-                comments[0],
-                "Please do not automate the download and installation of Forge."
-            );
+        // Verify comments
+        assert!(forge_version.comment.is_some());
+        let comments = forge_version.comment.unwrap();
+        assert_eq!(comments.len(), 2);
+        assert_eq!(
+            comments[0],
+            "Please do not automate the download and installation of Forge."
+        );
 
-            // Verify libraries
-            assert_eq!(forge_version.libraries.len(), 1);
-            let library = &forge_version.libraries[0];
-            assert_eq!(
-                library.name,
-                "net.minecraftforge:forge:1.21.1-52.1.1:universal"
-            );
-            assert_eq!(library.downloads.artifact.size, 2620063);
+        // Verify libraries
+        assert_eq!(forge_version.libraries.len(), 1);
+        let library = &forge_version.libraries[0];
+        assert_eq!(
+            library.name,
+            "net.minecraftforge:forge:1.21.1-52.1.1:universal"
+        );
+        assert_eq!(library.downloads.as_ref().unwrap().artifact.size, 2620063);
 
-            // Verify arguments
-            assert_eq!(forge_version.arguments.game.len(), 2);
-            assert_eq!(forge_version.arguments.jvm.len(), 1);
-            assert_eq!(forge_version.arguments.game[0], "--launchTarget");
-            assert_eq!(
-                forge_version.arguments.jvm[0],
-                "-Djava.net.preferIPv6Addresses=system"
-            );
-        }
+        // Verify arguments
+        assert_eq!(forge_version.arguments.game.len(), 2);
+        assert_eq!(forge_version.arguments.jvm.len(), 1);
+        assert_eq!(forge_version.arguments.game[0], "--launchTarget");
+        assert_eq!(
+            forge_version.arguments.jvm[0],
+            "-Djava.net.preferIPv6Addresses=system"
+        );
+    }
 
-        /// Test handling of invalid JSON input
-        #[test]
-        fn test_invalid_json() {
-            let invalid_json = r#"{ "id": "invalid" "#; // Intentionally malformed JSON
-            let result = parse_forge_version(invalid_json);
-            assert!(result.is_err(), "Parser should reject invalid JSON");
-        }
+    /// Test handling of invalid JSON input
+    #[test]
+    fn test_invalid_json() {
+        let invalid_json = r#"{ "id": "invalid" "#; // Intentionally malformed JSON
+        let result = parse_forge_version(invalid_json);
+        assert!(result.is_err(), "Parser should reject invalid JSON");
+    }
 
-        /// Test parsing a more complex structure to ensure all fields are properly handled
-        #[test]
-        fn test_complex_structure() {
-            let complex_json = r#"
+    /// Test parsing a more complex structure to ensure all fields are properly handled
+    #[test]
+    fn test_complex_structure() {
+        let complex_json = r#"
             {
                 "id": "1.21.1-forge-52.1.1",
                 "time": "2025-04-19T12:34:02+00:00",
@@ -217,13 +211,12 @@ mod tests {
             }
             "#;
 
-            let result = parse_forge_version(complex_json);
-            assert!(result.is_ok(), "Failed to parse complex Forge version JSON");
+        let result = parse_forge_version(complex_json);
+        assert!(result.is_ok(), "Failed to parse complex Forge version JSON");
 
-            let forge_version = result.unwrap();
-            assert_eq!(forge_version.libraries.len(), 2);
-            assert_eq!(forge_version.arguments.jvm.len(), 2);
-            assert_eq!(forge_version.arguments.jvm[1], "-Xmx2G");
-        }
+        let forge_version = result.unwrap();
+        assert_eq!(forge_version.libraries.len(), 2);
+        assert_eq!(forge_version.arguments.jvm.len(), 2);
+        assert_eq!(forge_version.arguments.jvm[1], "-Xmx2G");
     }
 }

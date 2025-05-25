@@ -325,6 +325,11 @@ pub mod version_parser {
      * # Returns
      *
      * * `Result<MinecraftVersion, Box<dyn Error>>` - The parsed version or an error
+     */    /**
+     * Parse a version JSON file from a root directory path and version ID.
+     * 
+     * This function constructs a path to the version JSON file using the pattern:
+     * `root_dir/versions/version_id/version_id.json` and parses the version information.
      */
     pub fn parse_version_from_root_dir(
         root_dir: &PathBuf,

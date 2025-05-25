@@ -6,6 +6,7 @@ pub use crate::craft_launcher::utils::directory_operations;
 pub use crate::craft_launcher::utils::file_operations;
 pub use crate::craft_launcher::utils::networking;
 pub use crate::craft_launcher::utils::path_operations;
+pub use crate::craft_launcher::utils::string_utils;
 
 // Core module exports
 pub use crate::craft_launcher::core::disposable;

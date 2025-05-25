@@ -9,3 +9,6 @@ pub mod networking;
 
 /// This module can get temporal directory.
 pub mod path_operations;
+
+/// This module is string utils
+pub mod string_utils;
